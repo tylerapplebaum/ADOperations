@@ -22,7 +22,7 @@ Function script:Add-ADUsers {
 }
 
 Function script:Add-LocalUsers {
-  $PW = Format-Passwords2
+  $PW = Format-Passwords
   Write-Host $PW -ForegroundColor Green
   $Computername = $env:COMPUTERNAME
   $ADSIComp = [adsi]"WinNT://$Computername"
