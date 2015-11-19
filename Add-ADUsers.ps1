@@ -1,14 +1,18 @@
 Function script:Format-Passwords {
+#Generate passwords to meet default Server 2012 R2 complexity requirements - https://technet.microsoft.com/en-us/library/cc786468(v=ws.10).aspx
   $CharSetRangeSymbol = @(32..47+58..64+91..96+123..126)
+  $CharSetRangeNum = @(48..57)
   $CharSetRangeUpper = @(65..90)
   $CharSetRangeLower = @(97..122)
   $RandomInputSymbol = ForEach ($Char in $CharSetRangeSymbol){[char]$Char}
+  $RandomInputNum= ForEach ($Char in $CharSetRangeNum){[char]$Char}
   $RandomInputUpper = ForEach ($Char in $CharSetRangeUpper){[char]$Char}
   $RandomInputLower = ForEach ($Char in $CharSetRangeLower){[char]$Char}
   $PasswordArrSymbol = Get-Random -Input $RandomInputSymbol -count 2
-  $PasswordArrUpper = Get-Random -Input $RandomInputUpper -count 5
-  $PasswordArrLower = Get-Random -Input $RandomInputLower -count 5
-  $PasswordArrComplete = $PasswordArrSymbol+$PasswordArrUpper+$PasswordArrLower
+  $PasswordArrNum = Get-Random -Input $RandomInputNum -count 2
+  $PasswordArrUpper = Get-Random -Input $RandomInputUpper -count 4
+  $PasswordArrLower = Get-Random -Input $RandomInputLower -count 4
+  $PasswordArrComplete = $PasswordArrSymbol+$PasswordArrNum+$PasswordArrUpper+$PasswordArrLower
   $Random = New-Object Random
   Return $Password = [string]::join("",($PasswordArrComplete | sort {$Random.Next()}))
 }
