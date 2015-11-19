@@ -5,7 +5,7 @@ Function script:Format-Passwords {
   $CharSetRangeUpper = @(65..90)
   $CharSetRangeLower = @(97..122)
   $RandomInputSymbol = ForEach ($Char in $CharSetRangeSymbol){[char]$Char}
-  $RandomInputNum= ForEach ($Char in $CharSetRangeNum){[char]$Char}
+  $RandomInputNum = ForEach ($Char in $CharSetRangeNum){[char]$Char}
   $RandomInputUpper = ForEach ($Char in $CharSetRangeUpper){[char]$Char}
   $RandomInputLower = ForEach ($Char in $CharSetRangeLower){[char]$Char}
   $PasswordArrSymbol = Get-Random -Input $RandomInputSymbol -count 2
