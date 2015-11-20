@@ -1,14 +1,10 @@
 Function script:Format-Passwords {
 #Generate passwords to meet default Server 2012 R2 complexity requirements - https://technet.microsoft.com/en-us/library/cc786468(v=ws.10).aspx
-  $RandomInputSymbol = ForEach ($Char in @(32..47+58..64+91..96+123..126)){[char]$Char}
-  $RandomInputNum = ForEach ($Char in @(48..57)){[char]$Char}
-  $RandomInputUpper = ForEach ($Char in @(65..90)){[char]$Char}
-  $RandomInputLower = ForEach ($Char in @(97..122)){[char]$Char}
-  $PasswordArrSymbol = Get-Random -Input $RandomInputSymbol -count 2
-  $PasswordArrNum = Get-Random -Input $RandomInputNum -count 2
-  $PasswordArrUpper = Get-Random -Input $RandomInputUpper -count 4
-  $PasswordArrLower = Get-Random -Input $RandomInputLower -count 4
-  $PasswordArrComplete = $PasswordArrSymbol+$PasswordArrNum+$PasswordArrUpper+$PasswordArrLower
+  $RandomInputSymbol = $(ForEach ($Char in @(32..47+58..64+91..96+123..126)){[char]$Char}) | Get-Random -count 2
+  $RandomInputNum = $(ForEach ($Char in @(48..57)){[char]$Char}) | Get-Random -count 2
+  $RandomInputUpper = $(ForEach ($Char in @(65..90)){[char]$Char}) | Get-Random -count 4
+  $RandomInputLower = $(ForEach ($Char in @(97..122)){[char]$Char}) | Get-Random -count 4
+  $PasswordArrComplete = $RandomInputSymbol+$RandomInputNum+$RandomInputUpper+$RandomInputLower
   $Random = New-Object Random
   Return $Password = [string]::join("",($PasswordArrComplete | sort {$Random.Next()}))
 }
