@@ -1,13 +1,9 @@
 Function script:Format-Passwords {
 #Generate passwords to meet default Server 2012 R2 complexity requirements - https://technet.microsoft.com/en-us/library/cc786468(v=ws.10).aspx
-  $CharSetRangeSymbol = @(32..47+58..64+91..96+123..126)
-  $CharSetRangeNum = @(48..57)
-  $CharSetRangeUpper = @(65..90)
-  $CharSetRangeLower = @(97..122)
-  $RandomInputSymbol = ForEach ($Char in $CharSetRangeSymbol){[char]$Char}
-  $RandomInputNum = ForEach ($Char in $CharSetRangeNum){[char]$Char}
-  $RandomInputUpper = ForEach ($Char in $CharSetRangeUpper){[char]$Char}
-  $RandomInputLower = ForEach ($Char in $CharSetRangeLower){[char]$Char}
+  $RandomInputSymbol = ForEach ($Char in @(32..47+58..64+91..96+123..126)){[char]$Char}
+  $RandomInputNum = ForEach ($Char in @(48..57)){[char]$Char}
+  $RandomInputUpper = ForEach ($Char in @(65..90)){[char]$Char}
+  $RandomInputLower = ForEach ($Char in @(97..122)){[char]$Char}
   $PasswordArrSymbol = Get-Random -Input $RandomInputSymbol -count 2
   $PasswordArrNum = Get-Random -Input $RandomInputNum -count 2
   $PasswordArrUpper = Get-Random -Input $RandomInputUpper -count 4
