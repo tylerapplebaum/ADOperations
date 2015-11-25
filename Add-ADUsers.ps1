@@ -45,13 +45,9 @@ Function script:Test-LocalCredential {
 }
 
 Function script:Validate-Users {
-#Thanks to Boe Prox - https://mcpmag.com/articles/2015/05/07/local-user-accounts-with-powershell.aspx
-  $xml = '
-  <QueryList>
-  <Query  Id="0" Path="Security">
-  <Select  Path="Security">*[System[(EventID=4720)]]</Select>
-  </Query>
-  </QueryList>
-  '
-Get-WinEvent -FilterXml $xml |  Select -Expand Message
+$Event = Get-WinEvent -ComputerName $env:computername -FilterHashtable @{Logname='Security';Id=4720} -MaxEvents 1
+$EventXML = [xml]$Event.ToXml()
+$script:TimeCreated = $Event.TimeCreated.DateTime
+$script:SAMAccountName = $EventXML.Event.EventData.Data[8].'#text'
 }
+Invoke-Command -ScriptBlock {. Validate-Users}
