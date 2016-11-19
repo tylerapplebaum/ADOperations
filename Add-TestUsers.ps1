@@ -6,7 +6,7 @@ Version 0.1
 Last Updated Nov 19 2016
 
 .LINK
-https://gist.github.com/tylerapplebaum/
+https://gist.github.com/tylerapplebaum/d692d9d2e1335b8b111927c8292c5dac
 https://randomuser.me/
 
 .DESCRIPTION
