@@ -18,7 +18,7 @@ Catch [Exception] {
   Return $_.Exception.Message
 }
 
-$RandomUsersArr = @()
+$RandomUsersArr = New-Object System.Collections.ArrayList
 $Date = Get-Date -format M.dd.yyyy
 $DomainInfo = Get-ADDomain
 $UsersOU=$DomainInfo.UsersContainer
@@ -39,33 +39,41 @@ Function script:Format-Passwords {
   $RandomInputLower = $(ForEach ($Char in @(97..122)){[char]$Char}) | Get-Random -count 4
   $PasswordArrComplete = $RandomInputSymbol+$RandomInputNum+$RandomInputUpper+$RandomInputLower
   $Random = New-Object Random
-  Return $Password = [string]::join("",($PasswordArrComplete | sort {$Random.Next()}))
+  $Password = [string]::join("",($PasswordArrComplete | sort {$Random.Next()}))
+  $script:PlainTextPW = @{
+    "PlainPW" = $Password
+  }
+  Return $Password | ConvertTo-SecureString -AsPlainText -Force
 }
 
 ForEach ($RandomUser in $RandomUsers) {
+  $First = $RandomUser.Name.First.Substring(0,1).ToUpper()+$RandomUser.Name.First.Substring(1).ToLower()
+  $Last = $RandomUser.Name.Last.Substring(0,1).ToUpper()+$RandomUser.Name.Last.Substring(1).ToLower()
+
   $UserProperties = @{
-  "GivenName" = $RandomUser.Name.First
-  "Surname" = $RandomUser.Name.Last
-  "Name" = $RandomUser.Name.First + $RandomUser.Name.Last
-  "DisplayName" = $RandomUser.Name.First + $RandomUser.Name.Last
+  "GivenName" = $First
+  "Surname" = $Last
+  "Name" = $First + " " + $Last
+  "DisplayName" = $First + " " + $Last
   "OfficePhone" = $RandomUser.Phone
   "City" = $RandomUser.Location.City
   "State" = $RandomUser.Location.State
   "Country" = $Nationalities
   "Company" = $CompanyName
-  "SAMAccountName" = $RandomUser.Name.Last + $RandomUser.Name.First[1]
-  "UserPrincipalName" = $RandomUser.Name.Last + $RandomUser.Name.First[1] + $UPNSuffix
+  "SAMAccountName" = $Last + $First[0]
+  "UserPrincipalName" = $Last + $First[0] + $UPNSuffix
   "AccountPassword" = . Format-Passwords
   "Enabled" = $True
   "ChangePasswordAtLogon" = $False
   "Description" = "Test Account Generated $Date"
-  "Path = $UsersOU"
+  "Path" = $UsersOU
   }
 
   New-ADUser @UserProperties
   $UserPropertiesObj = New-Object PSObject -Property $UserProperties
-  $RandomUsersArr += $UserPropertiesObj #Add the object to the array
+  $UserPropertiesObj | Add-Member $PlainTextPW
+  $RandomUsersArr.Add($UserPropertiesObj) | Out-Null #Add the object to the array
 
 } #End ForEach
 
-$RandomUsersArr | Export-CSV $env:UserProfile\Desktop\UserCreation.csv -Append
+$RandomUsersArr | Export-CSV $env:UserProfile\Desktop\UserCreation.csv -Append -NoTypeInformation
