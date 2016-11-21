@@ -32,7 +32,7 @@ PS C:\> Add-TestUsers.ps1 -NumUsers 10
 Creates 10 AD user accounts
 
 .EXAMPLE
-PS C:\> Get-Traceroute -NumUsers 18 -CompanyName "Apple Computer"
+PS C:\> Add-TestUsers.ps1 -NumUsers 18 -CompanyName "Apple Computer"
 Creates 18 AD user accounts with Apple Computer as the Company Name under Organization
 #>
 
@@ -50,9 +50,9 @@ Creates 18 AD user accounts with Apple Computer as the Company Name under Organi
         [string]$Nationalities = "US"
 		)
 Function script:Set-Environment {
-  $RandomUsersArr = New-Object System.Collections.ArrayList
-  $Date = Get-Date -format M.dd.yyyy
-
+$RandomUsersArr = New-Object System.Collections.ArrayList
+$Date = (Get-Date -Format (Get-Culture).DateTimeFormat.ShortDatePattern) -replace '/','.'
+$DesktopPath = [Environment]::GetFolderPath("Desktop")
   Try {
     Import-Module ActiveDirectory -ErrorAction Stop
   }
@@ -67,7 +67,7 @@ Function script:Set-Environment {
 
 Function script:Get-UserData {
   Try {
-    $RandomUsers = Invoke-RestMethod "https://www.randomuser.me/api/?results=$NumUsers&nat=$Nationalities" | select -ExpandProperty Results
+    $RandomUsers = Invoke-RestMethod "https://www.randomuser.me/api/?results=$NumUsers&nat=$Nationalities" | Select-Object -ExpandProperty Results
   }
   Catch [Exception] {
     Return $_.Exception.Message
@@ -122,4 +122,4 @@ ForEach ($RandomUser in $RandomUsers) {
 
 } #End ForEach
 
-$RandomUsersArr | Export-CSV $env:UserProfile\Desktop\UserCreation.csv -Append -NoTypeInformation
+$RandomUsersArr | Export-CSV $DesktopPath\UserCreation.csv -Append -NoTypeInformation
