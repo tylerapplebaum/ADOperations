@@ -38,17 +38,18 @@ Creates 18 AD user accounts with Apple Computer as the Company Name under Organi
 
 [CmdletBinding()]
     param(
-		[Parameter(mandatory=$true, HelpMessage="Specify the number of users to create")]
-		[Alias("users")]
+	[Parameter(mandatory=$true, HelpMessage="Specify the number of users to create")]
+	[Alias("users")]
     [ValidateRange(1,1000)]
-        [int]$NumUsers,
+    [int]$NumUsers,
     [Parameter(HelpMessage="Specify the company name")]
     [Alias("co")]
-        [string]$CompanyName = "Evil Corp",
+    [string]$CompanyName = "Evil Corp",
     [Parameter(HelpMessage="Specify the users' nationalities")]
     [Alias("nat")]
-        [string]$Nationalities = "US"
-		)
+    [string]$Nationalities = "US"
+	)
+	
 Function script:Set-Environment {
 $RandomUsersArr = New-Object System.Collections.ArrayList
 $Date = (Get-Date -Format (Get-Culture).DateTimeFormat.ShortDatePattern) -replace '/','.'
